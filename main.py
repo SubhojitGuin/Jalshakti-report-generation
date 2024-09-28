@@ -7,9 +7,11 @@ st.title("Report Generator")
 print("\n\n***** App Started *****\n\n")
 
 State_Name = st.text_input(label="You want to Generate a Report of Which State?")
+Organisation_name = st.text_input("Your Organization Name:")
+Date = st.date_input("Enter Date:", value="default_value_today")
 
 if st.button("Generate Report"):
-    noc_response = generate_report(State_Name)
+    noc_response = generate_report(State_Name, Organisation_name, Date.strftime("%d/%m/%Y"))
     # print(noc_response)
     st.download_button("Download Report", noc_response, "Report.pdf", mime="application/pdf")
 

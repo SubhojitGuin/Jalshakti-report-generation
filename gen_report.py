@@ -84,8 +84,8 @@ html_template = """
       <div class="cover-page">
           <h1>Comprehensive Guide on Ground Water Resource Management</h1>
           <h2>Groundwater Resource Assessment, Management, and Compliance</h2>
-          <p>Prepared by: [Author/Organization Name]</p>
-          <p>Date: [DD/MM/YYYY]</p>
+          <p>Prepared by: {}</p>
+          <p>Date: {}</p>
       </div>
 
       <!-- Table of Contents -->
@@ -124,7 +124,7 @@ html_template = """
   </html>
   """
 
-def generate_report(State_name):
+def generate_report(State_name, Organisation_name, Date):
   print("Generating report ...")
 
   with open("Report.txt", 'w') as report:
@@ -208,7 +208,7 @@ def generate_report(State_name):
 
   options = {"page-size": "A4"}
   # print(response)
-  final_response = html_template.format(response_GRA_html, response_NOC_html1, response_NOC_html2, response_TO_html, response_MP_html, response_GT_html)
+  final_response = html_template.format(Organisation_name, Date ,response_GRA_html, response_NOC_html1, response_NOC_html2, response_TO_html, response_MP_html, response_GT_html)
 
   with open("Report.html", "w") as file:
     file.write(final_response)

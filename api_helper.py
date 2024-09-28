@@ -1,7 +1,13 @@
 import requests
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+API = os.getenv("API")
 
 def get_data_from_sql(question, sessionId):
-    url = "http://127.0.0.1:8080/api/v1/sql_dataframe"
+    url = f"{API}/api/v1/sql_dataframe"
     payload = {
         "question": question,
         "language": "English",
@@ -11,7 +17,7 @@ def get_data_from_sql(question, sessionId):
     return response.json()["response"]
 
 def get_data_from_text(question, sessionId):
-    url = "http://127.0.0.1:8080/api/v1/text"
+    url = f"{API}/api/v1/text"
     payload = {
         "question": question,
         "language": "English",
