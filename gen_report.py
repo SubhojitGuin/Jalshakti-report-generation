@@ -4,6 +4,11 @@ import pdfkit
 import re
 # from template import html_template
 
+
+path_to_wkhtmltopdf = '/usr/bin/wkhtmltopdf'  # Default path in most Linux systems
+config = pdfkit.configuration(wkhtmltopdf=path_to_wkhtmltopdf)
+
+
 html_template = """
   <html>
     <head>
@@ -212,7 +217,7 @@ def generate_report(State_name, Organisation_name, Date):
   with open("Report.html", "w") as file:
     file.write(final_response)
 
-  pdf_output = pdfkit.from_string(final_response, False, options=options)
+  pdf_output = pdfkit.from_string(final_response, False, options=options , configuration=config)
 
   print("Report Generation Completed...")
 
