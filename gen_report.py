@@ -2,7 +2,6 @@ from api_helper import get_data_from_sql , get_data_from_text
 import pandas as pd
 import pdfkit
 import re
-import markdown
 # from template import html_template
 
 html_template = """

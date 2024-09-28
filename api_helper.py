@@ -4,7 +4,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-API = os.getenv("API")
+# API = os.getenv("API")
+API = "https://eea3-2405-201-8006-7866-7c99-c1f7-60a4-581e.ngrok-free.app"
 
 def get_data_from_sql(question, sessionId):
     url = f"{API}/api/v1/sql_dataframe"
