@@ -1,7 +1,7 @@
 import requests
 
 def get_data_from_sql(question, sessionId):
-    url = "http://127.0.0.1:8080/api/v1/sql"
+    url = "http://127.0.0.1:8080/api/v1/sql_dataframe"
     payload = {
         "question": question,
         "language": "English",
