@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-API = st.secrets["general"]["API"]
+API = st.secrets["API"]
 
 def get_data_from_sql(question, sessionId):
     url = f"{API}/api/v1/sql_dataframe"

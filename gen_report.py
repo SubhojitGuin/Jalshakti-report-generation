@@ -218,6 +218,7 @@ def generate_report(State_name, Organisation_name, Date):
     file.write(final_response)
 
   pdf_output = pdfkit.from_string(final_response, False, options=options , configuration=config)
+  # pdf_output = pdfkit.from_string(final_response, False, options=options)
 
   print("Report Generation Completed...")
 
