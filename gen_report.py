@@ -6,8 +6,8 @@ import random
 # from template import html_template
 
 
-# path_to_wkhtmltopdf = '/usr/bin/wkhtmltopdf'  # Default path in most Linux systems
-# config = pdfkit.configuration(wkhtmltopdf=path_to_wkhtmltopdf)
+path_to_wkhtmltopdf = '/usr/bin/wkhtmltopdf'  # Default path in most Linux systems
+config = pdfkit.configuration(wkhtmltopdf=path_to_wkhtmltopdf)
 
 
 html_template = """
@@ -195,8 +195,8 @@ def generate_report(State_name, Organisation_name, Date, update_status_callback)
     # print(response)
     final_response = html_template.format(Organisation_name, Date ,response_GRA_html, response_NOC_html1, response_NOC_html2, response_TO_html, response_MP_html, response_GT_html)
 
-    # pdf_output = pdfkit.from_string(final_response, False, options=options , configuration=config)
-    pdf_output = pdfkit.from_string(final_response, False, options=options)
+    pdf_output = pdfkit.from_string(final_response, False, options=options , configuration=config)
+    # pdf_output = pdfkit.from_string(final_response, False, options=options)
 
     update_status_callback("Report Generation Completed...", 100)
 
