@@ -1,47 +1,37 @@
 import streamlit as st
-import subprocess
 import time
 from gen_report import generate_report
+import datetime 
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 st.title("Report Generator")
-print("\n\n***** App Started *****\n\n")
+logging.info("***** App Started *****")
 
 State_Name = st.text_input(label="You want to Generate a Report of Which State?")
 Organisation_name = st.text_input("Your Organization Name:")
-Date = st.date_input("Enter Date:", value="default_value_today")
+Date = st.date_input("Enter Date:", value=datetime.date.today())
 
+# Validate user inputs
 if st.button("Generate Report"):
-    noc_response = generate_report(State_Name, Organisation_name, Date.strftime("%d/%m/%Y"))
-    # print(noc_response)
-    st.download_button("Download Report", noc_response, "Report.pdf", mime="application/pdf")
+    if not State_Name.strip():
+        st.error("State Name cannot be empty!")
+    elif not Organisation_name.strip():
+        st.error("Organization Name cannot be empty!")
+    else:
+        with st.spinner("Generating the report..."):
+            # Placeholder for status updates
+            report_status = st.empty()  
 
-# def generate_pdf(text_input):
-
-#     question_input = st.text_area("You Want to Generate the GroundWater Report of which State?")
-
-#     if st.button("Generate Report"):
-
+        progress = st.progress(0)
+        def update_status(message, progress_bar_value):
+            progress.progress(progress_bar_value)  # Update progress bar dynamically
+            report_status.write(message)  # Update status dynamically
+            
+        # Call to generate_report() and show download button
+        response = generate_report(State_Name, Organisation_name, Date.strftime("%d/%m/%Y"), update_status)
         
-
-         
-
-
-
-# if __name__ == "__main__":
-
-#     generate_pdf("Hey There")
-#     # Streamlit command with necessary arguments
-#     streamlit_cmd = [
-#         "streamlit", 
-#         "run", 
-#         "app.py",  # or use sys.argv[0] for the current file
-#         "--server.headless=true",  # Ensure it runs headless (good for servers)
-#         "--server.enableCORS=false",  # Disable CORS if needed for local testing
-#     ]
-
-#     # Run the Streamlit app using subprocess
-#     subprocess.run(streamlit_cmd)
-
-
-
-    
+        # Provide download button for the generated report
+        st.success("Report Generation Completed!")
+        st.download_button("Download Report", response, "Report.pdf", mime="application/pdf")

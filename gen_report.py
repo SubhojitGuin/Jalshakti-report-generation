@@ -2,11 +2,12 @@ from api_helper import get_data_from_sql , get_data_from_text
 import pandas as pd
 import pdfkit
 import re
+import random
 # from template import html_template
 
 
-path_to_wkhtmltopdf = '/usr/bin/wkhtmltopdf'  # Default path in most Linux systems
-config = pdfkit.configuration(wkhtmltopdf=path_to_wkhtmltopdf)
+# path_to_wkhtmltopdf = '/usr/bin/wkhtmltopdf'  # Default path in most Linux systems
+# config = pdfkit.configuration(wkhtmltopdf=path_to_wkhtmltopdf)
 
 
 html_template = """
@@ -97,16 +98,17 @@ html_template = """
       <h2>Table of Contents</h2>
       <div class="table-of-contents">
           <ul>
-              <li>1. Introduction</li>
-              <li>2. Ground Water Resource Assessment</li>
-              <li>3. Categorization of Areas</li>
+              <li>1. GroundWater Resource Assessment & Area Wise Categorization</li>
+              <li>2. NOC Guidlines
+                  <ul>
+                      <li>2.1 Guidance on how to obtain NOC</li>
+                      <li>2.2 Conditions for obtaining NOC for ground water extraction</li>
+                  </ul>
+              </li>
+              <li>3. Training Opportunities</li>
               <li>4. Ground Water Management Practices</li>
-              <li>5. Conditions for Obtaining NOC for Ground Water Extraction</li>
-              <li>6. Guidance on How to Obtain NOC</li>
-              <li>7. Definition of Groundwater Terms</li>
-              <li>8. Training Opportunities Related to Ground Water</li>
-              <li>9. Conclusion</li>
-              <li>10. References</li>
+              <li>5. Definition of GroundWater Terms</li>
+             
           </ul>
       </div>
       <div class="page-break"></div>
@@ -128,111 +130,74 @@ html_template = """
   </html>
   """
 
-def generate_report(State_name, Organisation_name, Date):
-  print("Generating report ...")
+def generate_report(State_name, Organisation_name, Date, update_status_callback):
+    update_status_callback("Generating report...", 0)
+    session_id = random.randint(0,1000)
+    # GroundWater Resource Assessment
+    update_status_callback("Fetching Ground Water Resource Assessment data...", 2)
+    question_GRA = f"Give the Groundwater Resources data and classification of {State_name} and include only relevant columns"
+    response_GRA = get_data_from_sql(question_GRA, session_id)
+    response_GRA_html = re.sub(r'\n', '<br>', response_GRA)
 
-  with open("Report.txt", 'w') as report:
-    report.write("Report\n")
+    update_status_callback("Ground Water Resource Assessment Completed", 18)
 
-  #-- GroundWater Resource Assessment --
-  question_GRA = f"Give the Groundwater Resources data and classification of {State_name} and include only relevant columns"
-  response_GRA = get_data_from_sql(question_GRA, "Streamlit")
-  response_GRA_html = re.sub(r'\n', '<br>', response_GRA)
+    # NOC guidelines - Guidance on obtaining NOC
+    update_status_callback("Fetching NOC guidelines...", 20)
+    question_NOC1 = "Provide the Guidance on how to obtain NOC"
+    response_NOC1 = get_data_from_text(question_NOC1, session_id)
+    response_NOC_html1 = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', response_NOC1)
+    response_NOC_html1 = re.sub(r'\n', '<br>', response_NOC_html1)
 
-  with open("Report.txt", 'a') as report:
-    report.write("\nGround Water Resource Assessment & Area Wise Categorization\n")
-    report.write(repr(response_GRA))
+    update_status_callback("NOC Guidelines Completed", 32)
 
-  print("GroundWater Resource Assessment Completed")
+    # NOC guidelines - Conditions for obtaining NOC
+    update_status_callback("Fetching conditions for obtaining NOC...", 35)
+    question_NOC2 = "Provide the Conditions for obtaining NOC for ground water extraction"
+    response_NOC2 = get_data_from_text(question_NOC2, session_id)
+    response_NOC_html2 = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', response_NOC2)
+    response_NOC_html2 = re.sub(r'\n', '<br>', response_NOC_html2)
 
-  # -- NOC guidelines --
-  question_NOC1 = "Provide the Guidance on how to obtain NOC"
-  response_NOC1 = get_data_from_text(question_NOC1, "Streamlit")
-  response_NOC_html1 = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', response_NOC1)
-  response_NOC_html1 = re.sub(r'\n', '<br>', response_NOC_html1)
+    update_status_callback("NOC Conditions Completed", 45)
+    
+    # Training Opportunities
+    update_status_callback("Fetching training opportunities...", 48)
+    question_TO = "Provide the detailed training opportunities"
+    response_TO = get_data_from_text(question_TO, session_id)
+    response_TO_html = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', response_TO)
+    response_TO_html = re.sub(r'\n', '<br>', response_TO_html)
 
-  with open("Report.txt", 'a') as report:
-    report.write("\nNOC Guidelines\n")
-    report.write("\nGuidance on how to obtain NOC\n")
-    report.write(repr(response_NOC1))
+    update_status_callback("Training Opportunities Completed", 61)
 
-  print("NOC Guidelines Completed")
+    # Groundwater Management Practices
+    update_status_callback("Fetching groundwater management practices...", 60)
+    question_MP = "Provide the details of Ground Water Management Practices"
+    response_MP = get_data_from_text(question_MP, session_id)
+    response_MP_html = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', response_MP)
+    response_MP_html = re.sub(r'\n', '<br>', response_MP_html)
 
-  question_NOC2 = "Provide the Conditions for obtaining NOC for ground water extraction"
-  response_NOC2 = get_data_from_text(question_NOC2, "Streamlit")
-  response_NOC_html2 = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', response_NOC2)
-  response_NOC_html2 = re.sub(r'\n', '<br>', response_NOC_html2)
+    update_status_callback("Groundwater Management Practices Completed", 73)
 
-  
-  with open("Report.txt", 'a') as report:
-    report.write("\nNOC Guidelines\n")
-    report.write("\nConditions for obtaining NOC for ground water extraction\n")
-    report.write(repr(response_NOC2))
+    # Ground Water Terms Definitions
+    update_status_callback("Fetching glossary of groundwater terms...", 75)
+    question_GT = "Provide the definitions of technical terms associated with groundwater"
+    response_GT = get_data_from_text(question_GT, session_id)
+    response_GT_html = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', response_GT)
+    response_GT_html = re.sub(r'\n', '<br>', response_GT_html)
 
-  print("NOC Conditions Completed")
-  
-  # -- Training Oppurtunities --
-  question_TO = "Provide the detailed training opportunities"
-  response_TO = get_data_from_text(question_TO, "Streamlit")
-  # response_TO_html = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', response_TO).replace("\n", "<br>")
-  response_TO_html = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', response_TO)
-  response_TO_html = re.sub(r'\n', '<br>', response_TO_html)
+    update_status_callback("Glossary of Groundwater Terms Completed", 88)
 
-  with open("Report.txt", 'a') as report:
-    report.write("\nTraining Opportunities\n")
-    report.write(repr(response_TO))
+    # Generate final PDF report
+    update_status_callback("Generating final PDF report...", 90)
 
-  print("Training Oppurtunities Completed")
+    # response = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', response).replace("\n", "<br>")
 
-  # -- Groundwater Management Practices --
-  question_MP = "Provide the details of Ground Water Management Practices"
-  response_MP = get_data_from_text(question_MP, "Streamlit")
-  response_MP_html = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', response_MP)
-  response_MP_html = re.sub(r'\n', '<br>', response_MP_html)
+    options = {"page-size": "A4"}
+    # print(response)
+    final_response = html_template.format(Organisation_name, Date ,response_GRA_html, response_NOC_html1, response_NOC_html2, response_TO_html, response_MP_html, response_GT_html)
 
-  with open("Report.txt", 'a') as report:
-    report.write("\nGround Water Management Practices\n")
-    report.write(repr(response_MP))
+    # pdf_output = pdfkit.from_string(final_response, False, options=options , configuration=config)
+    pdf_output = pdfkit.from_string(final_response, False, options=options)
 
-  print("Groundwater Management Practices Completed")
+    update_status_callback("Report Generation Completed...", 100)
 
-  #-- Ground Water Terms Definitions --
-  question_GT = "Provide the Glossary of technical terms used"
-  response_GT = get_data_from_text(question_GT , "Streamlit")
-  response_GT_html = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', response_GT)
-  response_GT_html = re.sub(r'\n', '<br>', response_GT_html)
-
-  with open("Report.txt", 'a') as report:
-    report.write("\nDefinition of GroundWater Terms\n")
-    report.write(repr(response_GT))
-  
-  print("Ground Water Terms Definitions Completed")
-
-  # response = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', response).replace("\n", "<br>")
-
-  options = {"page-size": "A4"}
-  # print(response)
-  final_response = html_template.format(Organisation_name, Date ,response_GRA_html, response_NOC_html1, response_NOC_html2, response_TO_html, response_MP_html, response_GT_html)
-
-  with open("Report.html", "w") as file:
-    file.write(final_response)
-
-  pdf_output = pdfkit.from_string(final_response, False, options=options , configuration=config)
-  # pdf_output = pdfkit.from_string(final_response, False, options=options)
-
-  print("Report Generation Completed...")
-
-  return pdf_output
-  
-# def generate_report(State_name):
-#   question_NOC = "Provide the detailed guidelines for obtaining NOC"
-#   response = get_data_from_text(question_NOC, "NOC")
-
-#   response = markdown.markdown(response)
-#   response = re.sub(r'\n+', '<br>', response)
-
-#   options = {"page-size": "Letter"}
-
-#   pdf_output = pdfkit.from_string(response, False, options=options)
-
-#   return pdf_output
+    return pdf_output

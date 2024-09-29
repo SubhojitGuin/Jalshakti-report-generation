@@ -22,7 +22,7 @@ def get_data_from_sql(question, sessionId):
     return response.json()["response"]
 
 def get_data_from_text(question, sessionId):
-    url = f"{API}/api/v1/text"
+    url = f"{API}/api/v1/text_report"
     payload = {
         "question": question,
         "language": "English",
