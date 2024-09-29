@@ -4,9 +4,9 @@ import os
 
 
 # API = os.environ["API"]
-os.environ["API"] = st.secrets["API"]
+# os.environ["API"] = st.secrets["API"]
 
-API = os.environ["API"]
+API = st.secrets.general.api
 
 
 def get_data_from_sql(question, sessionId):
