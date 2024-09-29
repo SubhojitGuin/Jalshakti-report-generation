@@ -1,15 +1,17 @@
 import streamlit as st
 import requests
 import os
+import logging
 
 
 # API = os.environ["API"]
 # os.environ["API"] = st.secrets["API"]
 
-API = st.secrets.general.api
+API = st.secrets["general"]["api"]
 
 
 def get_data_from_sql(question, sessionId):
+    logging.info(f"API : {API}")
     url = f"{API}/api/v1/sql_dataframe"
     payload = {
         "question": question,
