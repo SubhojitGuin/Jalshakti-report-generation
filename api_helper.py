@@ -6,9 +6,11 @@ import os
 # API = os.environ["API"]
 os.environ["API"] = st.secrets["API"]
 
+API = os.environ["API"]
+
 
 def get_data_from_sql(question, sessionId):
-    url = f"{os.environ["API"]}/api/v1/sql_dataframe"
+    url = f"{API}/api/v1/sql_dataframe"
     payload = {
         "question": question,
         "language": "English",
@@ -18,7 +20,7 @@ def get_data_from_sql(question, sessionId):
     return response.json()["response"]
 
 def get_data_from_text(question, sessionId):
-    url = f"{os.environ["API"]}/api/v1/text"
+    url = f"{API}/api/v1/text"
     payload = {
         "question": question,
         "language": "English",
